@@ -1,7 +1,8 @@
 <x-guest-layout>
     <x-authentication-card>
         <x-slot name="logo">
-            <x-authentication-card-logo />
+            {{-- <x-authentication-card-logo /> --}}
+            <img src="{{ asset('image/logo.webp') }}" alt="Logo" style="width: 150px;">
         </x-slot>
 
         <x-validation-errors class="mb-4" />
@@ -10,7 +11,7 @@
             @csrf
 
             <div>
-                <x-label for="name" value="{{ __('Name') }}" />
+                <x-label for="name" value="{{ __('ชื่อ - นามสกุล') }}" />
                 <x-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
             </div>
 
@@ -20,12 +21,12 @@
             </div>
 
             <div class="mt-4">
-                <x-label for="password" value="{{ __('Password') }}" />
+                <x-label for="password" value="{{ __('รหัสผ่าน') }}" />
                 <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="new-password" />
             </div>
 
             <div class="mt-4">
-                <x-label for="password_confirmation" value="{{ __('Confirm Password') }}" />
+                <x-label for="password_confirmation" value="{{ __('ยืนยันรหัสผ่าน') }}" />
                 <x-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required autocomplete="new-password" />
             </div>
 
@@ -56,5 +57,11 @@
                 </x-button>
             </div>
         </form>
+
+        <style>
+            body {
+                background: linear-gradient(to right, red, orange, yellow);
+            }
+        </style>
     </x-authentication-card>
 </x-guest-layout>

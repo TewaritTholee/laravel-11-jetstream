@@ -1,8 +1,13 @@
 <x-guest-layout>
     <x-authentication-card>
-        <x-slot name="logo">
+        {{-- <x-slot name="logo">
             <x-authentication-card-logo />
+        </x-slot> --}}
+
+        <x-slot name="logo">
+            <img src="{{ asset('image/logo.webp') }}" alt="Logo" style="width: 150px;">
         </x-slot>
+
 
         <x-validation-errors class="mb-4" />
 
@@ -44,5 +49,13 @@
                 </x-button>
             </div>
         </form>
+
+        <style>
+            body {
+                background: linear-gradient(to right, red, orange, yellow);
+            }
+        </style>
     </x-authentication-card>
 </x-guest-layout>
+
+
