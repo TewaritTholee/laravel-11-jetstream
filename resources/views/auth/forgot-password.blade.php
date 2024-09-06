@@ -36,7 +36,7 @@
 
         <style>
             body {
-                background: linear-gradient(to right, red, orange, yellow);
+                background: linear-gradient(to bottom right, red, orange, yellow);
             }
         </style>
     </x-authentication-card>

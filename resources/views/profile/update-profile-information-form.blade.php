@@ -54,9 +54,15 @@
 
         <!-- Name -->
         <div class="col-span-6 sm:col-span-4">
-            <x-label for="name" value="{{ __('Name') }}" />
+            <x-label for="name" value="{{ __('ชื่อ - นามสกุล') }}" />
             <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.name" required autocomplete="name" />
             <x-input-error for="name" class="mt-2" />
+        </div>
+
+        <div class="col-span-6 sm:col-span-4">
+            <x-label for="username" value="{{ __('Username') }}" />
+            <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.username" required autocomplete="username" />
+            <x-input-error for="username" class="mt-2" />
         </div>
 
         <!-- Email -->
@@ -81,6 +87,20 @@
                 @endif
             @endif
         </div>
+
+        <div class="col-span-6 sm:col-span-4">
+            <x-label for="position" value="{{ __('ตำแหน่ง') }}" />
+            <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.position" required autocomplete="position" />
+            <x-input-error for="position" class="mt-2" />
+        </div>
+
+        <div class="col-span-6 sm:col-span-4">
+            <x-label for="branch" value="{{ __('สาขา') }}" />
+            <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.branch" required autocomplete="branch" />
+            <x-input-error for="branch" class="mt-2" />
+        </div>
+
+
     </x-slot>
 
     <x-slot name="actions">
