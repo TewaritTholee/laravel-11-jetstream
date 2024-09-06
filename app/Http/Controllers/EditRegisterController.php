@@ -1,86 +1,55 @@
 <?php
 
-
 namespace App\Http\Controllers;
 
-use App\Models\DataRegister;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Models\DataRegister;
+use Yajra\DataTables\Facades\DataTables;
 
 class EditRegisterController extends Controller
 {
-
     public function index()
     {
-        $dataRegisters = DataRegister::all();
-        return view('register.edit-register', compact('dataRegisters'));
+        return view('register.edit-register');
+    }
+
+    public function getDataRegisters()
+    {
+        return response()->json(DataTables::of(DataRegister::query())
+        ->addIndexColumn()
+        ->addColumn('action', function($row){
+            $btn = '<a href="javascript:void(0)" data-id="'.$row->id.'" class="editDataRegister btn btn-primary btn-sm">Edit</a>';
+            $btn .= ' <a href="javascript:void(0)" data-id="'.$row->id.'" class="deleteDataRegister btn btn-danger btn-sm">Delete</a>';
+            $btn .= ' <a href="javascript:void(0)" data-id="'.$row->id.'" class="showDataRegister btn btn-info btn-sm">Show</a>';
+            return $btn;
+        })
+        ->rawColumns(['action'])
+        ->make(true));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'Name_regis' => 'required|string|max:255',
-            'Phone_regis' => 'required|string|max:20',
-            // กำหนด validation อื่นๆ ตามที่ต้องการ
-        ]);
+        DataRegister::updateOrCreate(
+            ['id' => $request->data_register_id],
+            [
+                'Name_regis' => $request->Name_regis,
+                'Phone_regis' => $request->Phone_regis
+            ]
+        );
 
-        $dataRegister = DataRegister::create($request->all());
-
-        return response()->json($dataRegister);
+        return response()->json(['success' => 'Data saved successfully!']);
     }
 
-    public function update(Request $request, $id)
+    public function edit($id)
     {
-        $request->validate([
-            'Name_regis' => 'required|string|max:255',
-            'Phone_regis' => 'required|string|max:20',
-            // กำหนด validation อื่นๆ ตามที่ต้องการ
-        ]);
-
-        $dataRegister = DataRegister::findOrFail($id);
-        $dataRegister->update($request->all());
-
-        return response()->json($dataRegister);
+        $register = DataRegister::find($id);
+        return response()->json($register);
     }
 
     public function destroy($id)
     {
-        $dataRegister = DataRegister::findOrFail($id);
-        $dataRegister->delete();
-
-        return response()->json(['success' => 'Record deleted successfully.']);
+        DataRegister::find($id)->delete();
+        return response()->json(['success' => 'Data deleted successfully!']);
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-// โค้ดสำรอง
-// namespace App\Http\Controllers;
-
-// use Illuminate\Http\Request;
-
-// class EditRegisterController extends Controller
-// {
-//     public function index()
-//     {
-//         return view('edit-register'); // หรือชื่อไฟล์ blade ที่ต้องการ
-//     }
-// }
-
-
-
-
-// public function index()
-    // {
-    //     $dataRegisters = DataRegister::all();
-    //     return view('edit-register', compact('dataRegisters'));
-    // }

@@ -17,12 +17,33 @@ class DataRegister extends Model
 
     // กำหนด attributes ที่จะ fill ได้
     protected $fillable = [
-        'Status_regis', 'Flag_regis', 'Name_regis', 'IDUse_regis', 'Phone_regis',
-        'Address_regis', 'Regno_regis', 'Type_regis', 'IDTank_regis', 'STRNO_regis',
-        'BrandCar_regis', 'ModelCar_regis', 'YearCar_regis', 'ColourCar_regis',
-        'DateCus_regis', 'Community_regis', 'Notes_regis', 'CheckBooks_regis',
-        'CheckKeys_regis', 'CheckReceipt_regis', 'DateInsurance_regis',
-        'DateLastInsur', 'DateAct_regis', 'DateLastAct', 'DateRegister_regis',
-        'DateTransferOut_regis', 'DateLastRegist', 'UserInsert'
+        'Status_regis',
+        'Flag_regis',
+        'Name_regis',
+        'IDUse_regis',
+        'Phone_regis',
+        'Address_regis',
+        'Regno_regis',
+        'Type_regis',
+        'IDTank_regis',
+        'STRNO_regis',
+        'BrandCar_regis',
+        'ModelCar_regis',
+        'YearCar_regis',
+        'ColourCar_regis',
+        'DateCus_regis',
+        'Community_regis',
+        'Notes_regis',
+        'CheckBooks_regis',
+        'CheckKeys_regis',
+        'CheckReceipt_regis',
+        'DateInsurance_regis',
+        'DateLastInsur',
+        'DateAct_regis',
+        'DateLastAct',
+        'DateRegister_regis',
+        'DateTransferOut_regis',
+        'DateLastRegist',
+        'UserInsert'
     ];
 }

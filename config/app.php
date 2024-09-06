@@ -123,4 +123,18 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    // 'providers' => [
+    //     // Other Service Providers
+
+    //     Yajra\DataTables\DataTablesServiceProvider::class,
+    // ],
+
+    // 'aliases' => [
+    //     // Other Facades
+
+    //     'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+    // ],
+
+
+
 ];
