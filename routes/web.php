@@ -23,6 +23,7 @@ Route::middleware([
     })->name('dashboard');
 });
 
+
 // login เข้าสู่ระบบ
 Route::post('/login', [LoginController::class, 'login']);
 
@@ -30,6 +31,20 @@ Route::post('/login', [LoginController::class, 'login']);
 Route::get('/register/edit-register', [EditRegisterController::class, 'index'])->name('edit.register');
 Route::get('registers/getDataRegisters', [EditRegisterController::class, 'getDataRegisters'])->name('registers.getDataRegisters');
 Route::resource('registers', EditRegisterController::class);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Route::get('registers', [EditRegisterController::class, 'index'])->name('registers.index');
 // Route::get('registers/getData', [EditRegisterController::class, 'getDataRegisters'])->name('registers.getData');
@@ -45,7 +60,16 @@ Route::resource('registers', EditRegisterController::class);
 
 
 
-
+// Route::middleware([
+    //     'auth:sanctum',
+    //     config('jetstream.auth_session'),
+    //     'verified',
+    //     'check.status', // เพิ่ม middleware ที่ตรวจสอบสถานะ
+    // ])->group(function () {
+    //     Route::get('/dashboard', function () {
+    //         return view('dashboard');
+    //     })->name('dashboard');
+    // });
 
 
 

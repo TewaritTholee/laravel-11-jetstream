@@ -49,13 +49,14 @@
             <div class="mt-4">
                 <x-label for="type" value="{{ __('รูปแบบ') }}" />
                 <select id="type" class="block mt-1 w-full" name="type" required style="border-radius: 8px;">
-                    <option value="">{{ __('กรุณาเลือกรูปแบบ') }}</option>
-                    <option value="admin" {{ old('type') == 'admin' ? 'selected' : '' }}>Admin</option>
-                    <option value="AUDIT" {{ old('type') == 'AUDIT' ? 'selected' : '' }}>AUDIT</option>
-                    <option value="manager" {{ old('type') == 'manager' ? 'selected' : '' }}>Manager</option>
-                    <option value="staff" {{ old('type') == 'staff' ? 'selected' : '' }}>Staff</option>
-                    <option value="master" {{ old('type') == 'master' ? 'selected' : '' }}>Master</option>
-                    {{-- <option value="user" {{ old('type') == 'user' ? 'selected' : '' }}>User</option> --}}
+                    <option value="">{{ __('กรุณาเลือกแผนก') }}</option>
+                    <option value="Admin" {{ old('type') == 'Admin' ? 'selected' : '' }}>Admin</option>
+                    <option value="แผนกทะเบียน/ประกันภัย" {{ old('type') == 'แผนกทะเบียน/ประกันภัย' ? 'selected' : '' }}>แผนกทะเบียน/ประกันภัย</option>
+                    <option value="แผนกการเงินนอก" {{ old('type') == 'แผนกการเงินนอก' ? 'selected' : '' }}>แผนกการเงินนอก</option>
+                    <option value="แผนกตรวจสอบ" {{ old('type') == 'แผนกตรวจสอบ' ? 'selected' : '' }}>แผนกตรวจสอบ</option>
+                    <option value="แผนกวิเคราะห์" {{ old('type') == 'แผนกวิเคราะห์' ? 'selected' : '' }}>แผนกวิเคราะห์</option>
+                    <option value="แผนกบัญชี" {{ old('type') == 'แผนกบัญชี' ? 'selected' : '' }}>แผนกบัญชี</option>
+                    <option value="แผนกรถบ้าน" {{ old('type') == 'แผนกรถบ้าน' ? 'selected' : '' }}>แผนกรถบ้าน</option>
                 </select>
             </div>
 
@@ -74,14 +75,14 @@
             </div>
 
 
-            <div class="mt-4">
+            {{-- <div class="mt-4" hidden>
                 <x-label for="stastus" value="{{ __('สถานะ') }}" />
                 <select id="stastus" class="block mt-1 w-full" name="stastus" required style="border-radius: 8px;">
                     <option value="">{{ __('กรุณาเลือกสถานะ') }}</option>
                     <option value="yes" {{ old('stastus') == 'yes' ? 'selected' : '' }}>Yes</option>
                     <option value="no" {{ old('stastus') == 'no' ? 'selected' : '' }}>No</option>
                 </select>
-            </div>
+            </div> --}}
 
             <div class="mt-4">
                 <x-label for="password" value="{{ __('รหัสผ่าน') }}" />

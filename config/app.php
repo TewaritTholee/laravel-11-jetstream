@@ -136,5 +136,13 @@ return [
     // ],
 
 
+    // 'providers' => [
+    //     // Other Service Providers
+
+    //     App\Providers\FortifyServiceProvider::class,
+    // ],
+
+
+
 
 ];
