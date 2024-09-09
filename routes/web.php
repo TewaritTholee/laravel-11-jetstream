@@ -4,9 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\EditRegisterController;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+// ทดสอบการใช้งาน user
+use App\Http\Controllers\UserController;
 
 
 Route::get('/', function () {
@@ -24,6 +23,7 @@ Route::middleware([
 });
 
 
+
 // login เข้าสู่ระบบ
 Route::post('/login', [LoginController::class, 'login']);
 
@@ -32,17 +32,24 @@ Route::get('/register/edit-register', [EditRegisterController::class, 'index'])-
 Route::get('registers/getDataRegisters', [EditRegisterController::class, 'getDataRegisters'])->name('registers.getDataRegisters');
 Route::resource('registers', EditRegisterController::class);
 
+// ตัวทดสอบ การทำ CRUD
+Route::resource('users', UserController::class);
 
 
 
 
 
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
+// ตัวทดสอบ การทำ CRUD
+// Route::resource('users', UserController::class);
+// Route::get('users/index', [UserController::class, 'index'])->name('users.index');
 
-
-
-
+// Route::get('users', [UserController::class, 'index'])->name('users.index');
+// Route::get('users', [UserController::class, 'index'])->name('users.index');
 
 
 

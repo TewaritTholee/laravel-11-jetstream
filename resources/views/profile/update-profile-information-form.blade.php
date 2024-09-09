@@ -59,6 +59,7 @@
             <x-input-error for="name" class="mt-2" />
         </div>
 
+        <!-- Username -->
         <div class="col-span-6 sm:col-span-4">
             <x-label for="username" value="{{ __('Username') }}" />
             <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.username" required autocomplete="username" />
@@ -88,12 +89,14 @@
             @endif
         </div>
 
+        <!-- Position -->
         <div class="col-span-6 sm:col-span-4">
             <x-label for="position" value="{{ __('ตำแหน่ง') }}" />
             <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.position" required autocomplete="position" />
             <x-input-error for="position" class="mt-2" />
         </div>
 
+        <!--  branch -->
         <div class="col-span-6 sm:col-span-4">
             <x-label for="branch" value="{{ __('สาขา') }}" />
             <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.branch" required autocomplete="branch" />
