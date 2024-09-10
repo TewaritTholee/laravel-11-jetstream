@@ -90,16 +90,23 @@
         </div>
 
         <!-- Position -->
-        <div class="col-span-6 sm:col-span-4">
+        <div class="col-span-6 sm:col-span-4" >
             <x-label for="position" value="{{ __('ตำแหน่ง') }}" />
-            <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.position" required autocomplete="position" />
+            <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.position" required autocomplete="position" readonly />
             <x-input-error for="position" class="mt-2" />
+        </div>
+
+        <!-- type -->
+        <div class="col-span-6 sm:col-span-4">
+            <x-label for="type" value="{{ __('แผนกงาน') }}" />
+            <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.type" required autocomplete="type" readonly/>
+            <x-input-error for="type" class="mt-2" />
         </div>
 
         <!--  branch -->
         <div class="col-span-6 sm:col-span-4">
             <x-label for="branch" value="{{ __('สาขา') }}" />
-            <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.branch" required autocomplete="branch" />
+            <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.branch" required autocomplete="branch" readonly/>
             <x-input-error for="branch" class="mt-2" />
         </div>
 

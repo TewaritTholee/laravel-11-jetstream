@@ -6,6 +6,8 @@ use App\Http\Controllers\EditRegisterController;
 
 // ทดสอบการใช้งาน user
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DataAssetController;
 
 
 Route::get('/', function () {
@@ -35,6 +37,79 @@ Route::resource('registers', EditRegisterController::class);
 // ตัวทดสอบ การทำ CRUD
 Route::resource('users', UserController::class);
 
+
+// ข้อมูลลูกค้า Aseet
+Route::get('/Data_Asset', [DataAssetController::class, 'index']);
+Route::get('/fetch-data-assets', [DataAssetController::class, 'fetchData']);
+Route::post('/data-assets/update/{id}', [DataAssetController::class, 'update']);
+Route::post('/data-assets/create', [DataAssetController::class, 'create']);
+
+
+
+
+
+
+
+
+
+
+Route::get('/customers', function () {
+    return view('customers.index');
+});
+
+Route::get('/customers', [CustomerController::class, 'index']);
+
+// Template Design
+// Route::resource('Data_Asset', DataAssetController::class);
+// Route::get('/Data_Asset', [DataAssetController::class, 'index']);
+
+// DataAsset Masiron
+Route::resource('data-assets', DataAssetController::class);
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Route::resource('data-assets', DataAssetController::class);
+// routes/web.php
+
+Route::resource('data-assets', DataAssetController::class);
+
+//
+// Route::get('/data-assets', [DataAssetController::class, 'index']);
+// Route::post('/data-assets', [DataAssetController::class, 'store']);
+// Route::put('/data-assets/{id}', [DataAssetController::class, 'update']);
+// Route::delete('/data-assets/{id}', [DataAssetController::class, 'destroy']);
+////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Route::get('/customer/{id}', [CustomerController::class, 'show'])->name('customer.show');
+// Route::get('/customer/{id}', [CustomerController::class, 'show'])->name('customer.show');
 
 
 

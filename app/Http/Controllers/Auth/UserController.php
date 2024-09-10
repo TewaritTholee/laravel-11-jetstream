@@ -21,28 +21,56 @@ class UserController extends Controller
     }
 
     // บันทึกข้อมูลผู้ใช้ใหม่
-    public function store(Request $request)
+    // public function store(Request $request)
+    // {
+    //     $request->validate([
+    //         'name' => 'required',
+    //         'email' => 'required|email|unique:users',
+    //         'username' => 'required|unique:users',
+    //         'password' => 'nullable|confirmed|min:8',  // รหัสผ่านไม่จำเป็นต้องกรอกหากไม่เปลี่ยน
+    //     ]);
+
+    //     User::create([
+    //         'name' => $request->name,
+    //         'email' => $request->email,
+    //         'username' => $request->username,
+    //         'password' => Hash::make($request->password),
+    //         'branch' => $request->branch,
+    //         'type' => $request->type,
+    //         'position' => $request->position,
+    //         'status' => $request->status,
+    //     ]);
+
+    //     return redirect()->route('users.index')->with('success', 'User created successfully.');
+    // }
+
+    public function update(Request $request, User $user)
     {
+        // ตรวจสอบข้อมูลที่ส่งมาเพื่อดูว่ามีอะไรขาดหายหรือไม่
+        dd($request->all());
+
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'username' => 'required|unique:users',
-            'password' => 'required|confirmed',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'username' => 'required|unique:users,username,' . $user->id,
+            'password' => 'nullable|confirmed|min:8',
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'branch' => $request->branch,
-            'type' => $request->type,
-            'position' => $request->position,
-            'status' => $request->status,
-        ]);
+        // อัปเดตข้อมูลผู้ใช้
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->username = $request->username;
 
-        return redirect()->route('users.index')->with('success', 'User created successfully.');
+        // อัปเดตรหัสผ่านถ้าส่งมา
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
+
 
     // แสดงรายละเอียดผู้ใช้
     public function show(User $user)

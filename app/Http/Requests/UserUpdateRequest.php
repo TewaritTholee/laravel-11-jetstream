@@ -20,6 +20,16 @@ class UserUpdateRequest extends FormRequest
      *
      * @return array<string, string>
      */
+    // public function rules(): array
+    // {
+    //     return [
+    //         'name'     => 'required|string|max:255',
+    //         'username' => 'required|string|max:255|unique:users,username,' . $this->route('user'),
+    //         'email'    => 'required|email|max:255|unique:users,email,' . $this->route('user'),
+    //     ];
+    // }
+
+    // UserUpdateRequest.php
     public function rules(): array
     {
         return [
@@ -28,5 +38,6 @@ class UserUpdateRequest extends FormRequest
             'email'    => 'required|email|max:255|unique:users,email,' . $this->route('user'),
         ];
     }
+
 }
 

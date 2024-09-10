@@ -22,6 +22,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)], // เพิ่มการตรวจสอบ username
             'branch' => ['nullable', 'string', 'max:255'], // เพิ่มการตรวจสอบ branch
+            'type' => ['nullable', 'string', 'max:255'], // เพิ่มการตรวจสอบ type
             'position' => ['nullable', 'string', 'max:255'], // เพิ่มการตรวจสอบ position
             'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
         ])->validateWithBag('updateProfileInformation');
@@ -39,6 +40,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
                 'email' => $input['email'],
                 'username' => $input['username'], // เพิ่มการบันทึก username
                 'branch' => $input['branch'], // เพิ่มการบันทึก branch
+                'type' => $input['type'], // เพิ่มการบันทึก type
                 'position' => $input['position'], // เพิ่มการบันทึก position
             ])->save();
         }
@@ -56,6 +58,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             'email' => $input['email'],
             'username' => $input['username'], // เพิ่มการบันทึก username สำหรับผู้ใช้ที่ต้องยืนยันอีเมล
             'branch' => $input['branch'], // เพิ่มการบันทึก branch
+            'type' => $input['type'], // เพิ่มการบันทึก type
             'position' => $input['position'], // เพิ่มการบันทึก position
             'email_verified_at' => null,
         ])->save();

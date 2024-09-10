@@ -56,6 +56,30 @@
             @enderror
         </div>
 
+        {{-- เพิ่มฟิลด์สำหรับการเปลี่ยนรหัสผ่าน --}}
+        {{-- <div class="mb-3">
+            <label for="inputPassword" class="form-label"><strong>Password (Optional):</strong></label>
+            <input
+                type="password"
+                name="password"
+                class="form-control @error('password') is-invalid @enderror"
+                id="inputPassword"
+                placeholder="New Password">
+            @error('password')
+                <div class="form-text text-danger">{{ $message }}</div>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <label for="inputPasswordConfirmation" class="form-label"><strong>Confirm Password:</strong></label>
+            <input
+                type="password"
+                name="password_confirmation"
+                class="form-control"
+                id="inputPasswordConfirmation"
+                placeholder="Confirm Password">
+        </div> --}}
+
         <button type="submit" class="btn btn-success"><i class="fa-solid fa-floppy-disk"></i> Update</button>
     </form>
 

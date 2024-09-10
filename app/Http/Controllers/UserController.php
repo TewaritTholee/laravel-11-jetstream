@@ -9,7 +9,7 @@ use Illuminate\Http\Response;
 use Illuminate\View\View;
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
-
+use Illuminate\Support\Facades\Hash;  // นำ Hash มาใช้งาน
 class UserController extends Controller
 {
     /**
@@ -56,14 +56,32 @@ class UserController extends Controller
         return view('users.edit', compact('user'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UserUpdateRequest $request, User $user): RedirectResponse
-    {
-        $user->update($request->validated());
 
-        return redirect()->route('users.index') ->with('success', 'User updated successfully');
+    public function update(Request $request, User $user)
+    {
+        // ตรวจสอบข้อมูลที่ส่งมาเพื่อดูว่ามีอะไรขาดหายหรือไม่
+        // dd($request->all());
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'username' => 'required|unique:users,username,' . $user->id,
+            'password' => 'nullable|confirmed|min:8',
+        ]);
+
+        // อัปเดตข้อมูลผู้ใช้
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->username = $request->username;
+
+        // อัปเดตรหัสผ่านถ้าส่งมา
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
 
     /**
@@ -76,3 +94,33 @@ class UserController extends Controller
         return redirect()->route('users.index') ->with('success', 'User deleted successfully');
     }
 }
+
+
+
+
+
+
+    /**
+     * Update the specified resource in storage.
+     */
+    // public function update(UserUpdateRequest $request, User $user): RedirectResponse
+    // {
+    //     $user->update($request->validated());
+
+    //     return redirect()->route('users.index') ->with('success', 'User updated successfully');
+    // }
+
+    // UserController.php
+    // public function update(UserUpdateRequest $request, User $user): RedirectResponse
+    // {
+    //     // dd($user, $request->all()); // Check if $user is correctly populated
+
+    //     try {
+    //         $user->update($request->validated());
+    //         return redirect()->route('users.index')->with('success', 'User updated successfully');
+    //     } catch (\Exception $e) {
+    //         // Log the error and/or handle the exception
+    //         \Log::error($e->getMessage());
+    //         return redirect()->route('users.index')->with('error', 'Failed to update user');
+    //     }
+    // }
