@@ -38,11 +38,52 @@ Route::resource('registers', EditRegisterController::class);
 Route::resource('users', UserController::class);
 
 
-// ข้อมูลลูกค้า Aseet
-Route::get('/Data_Asset', [DataAssetController::class, 'index']);
+// ข้อมูลลูกค้า Data Aseets
+Route::get('/data_asset', [DataAssetController::class, 'index']);
+Route::get('data_assets', [DataAssetController::class, 'index'])->name('data_assets.index');
 Route::get('/fetch-data-assets', [DataAssetController::class, 'fetchData']);
 Route::post('/data-assets/update/{id}', [DataAssetController::class, 'update']);
 Route::post('/data-assets/create', [DataAssetController::class, 'create']);
+Route::delete('/data-assets/delete/{id}', [DataAssetController::class, 'destroy'])->name('data-assets.destroy');
+
+// แสดง
+// Route::get('/assets/{id}', [DataAssetController::class, 'show'])->name('assets.show');
+
+// Route::get('/data-assets/show/{id}', [DataAssetController::class, 'show']);
+
+// Route::get('data-assets/{id}', [DataAssetController::class, 'show']);
+
+// Route::get('/data-assets/{id}', [DataAssetController::class, 'show']);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// routes/web.php
+// Route::get('/data-assets/{id}', [DataAssetController::class, 'show'])->name('data-assets.show');
+
+// Route::delete('/data-assets/delete/{id}', [DataAssetController::class, 'destroy']);
+// Route::get('/data-assets/{id}', [DataAssetController::class, 'show'])->name('data-assets.show');
+
 
 
 

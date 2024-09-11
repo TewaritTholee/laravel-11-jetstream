@@ -1,10 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>ข้อมูลสินทรัพย์ (Data Asset)</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
@@ -31,16 +32,84 @@
                         <div class="col-sm-6">
                             <h2><i class="fas fa-box-open"></i> ข้อมูลสินทรัพย์</h2>
                         </div>
+                        <div class="col-sm-6 d-flex justify-content-end align-items-center">
+                            <input type="text" class="form-control" id="searchAsset" placeholder="ค้นหาข้อมูลสินทรัพย์" style="max-width: 200px; height: 35px;">
 
-                        <div class="col-sm-6">
-                            <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal"><i
-                                    class="material-icons">&#xE147;</i> <span>เพิ่มข้อมูลสินทรัพย์</span></a>
-                            <a href="#deleteEmployeeModal" class="btn btn-danger" data-toggle="modal"><i
-                                    class="material-icons">&#xE15C;</i> <span>ลบข้อมูล</span></a>
+                            <a href="#addEmployeeModal" class="btn btn-success ml-2" data-toggle="modal">
+                                <i class="material-icons">&#xE147;</i> <span>เพิ่มข้อมูลสินทรัพย์</span>
+                            </a>
                         </div>
                     </div>
                 </div>
-                <table class="table table-striped table-hover">
+
+
+
+                {{-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#dataAssetModal" onclick="fetchData(1)">Show Data Asset</button> --}}
+
+
+                <!-- Modal -->
+                {{-- <div class="modal fade" id="dataAssetModal" tabindex="-1" role="dialog" aria-labelledby="dataAssetModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="dataAssetModalLabel">Data Asset Details</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <pre id="modalContent">Loading...</pre>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script>
+                    async function fetchData(id) {
+                        try {
+                            const response = await fetch(`/api/data-asset/${id}`);
+                            const result = await response.json();
+                            if (result.success) {
+                                // Display data in modal
+                                document.getElementById('modalContent').textContent = JSON.stringify(result.data, null, 2);
+                            } else {
+                                document.getElementById('modalContent').textContent = `Error: ${result.message}`;
+                            }
+                        } catch (error) {
+                            document.getElementById('modalContent').textContent = `Error: ${error.message}`;
+                        }
+                    }
+
+                    async function fetchData(id) {
+                        try {
+                            const response = await fetch(`/api/data-asset/${id}`);
+                            const contentType = response.headers.get("content-type");
+
+                            if (contentType && contentType.includes("application/json")) {
+                                const result = await response.json();
+                                if (result.success) {
+                                    // Display data in modal
+                                    document.getElementById('modalContent').textContent = JSON.stringify(result.data, null, 2);
+                                } else {
+                                    document.getElementById('modalContent').textContent = `Error: ${result.message}`;
+                                }
+                            } else {
+                                document.getElementById('modalContent').textContent = `Unexpected response format: ${await response.text()}`;
+                            }
+                        } catch (error) {
+                            document.getElementById('modalContent').textContent = `Error: ${error.message}`;
+                        }
+                    }
+
+                </script> --}}
+
+                {{-- ///////////////////////////////////////// --}}
+
+
+                <table class="table table-striped table-hover" id="data-asset-table">
                     <thead>
                         <tr>
                             <th>
@@ -49,152 +118,33 @@
                                     <label for="selectAll"></label>
                                 </span>
                             </th>
+                            <div class="mb-3">
+                                <label for="rowPerPage" class="form-label">แสดงผลต่อหน้า:</label>
+                                <select id="rowPerPage" class="form-select">
+                                    <option value="10">10</option>
+                                    <option value="20">20</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+
+
                             <th>ID</th>
                             <th>ชื่อ - นามสกุลลูกค้า</th>
                             <th>รหัสสินทรัพย์</th>
                             <th>ยี่ห้อ</th>
                             <th>หมายเลขทะเบียน</th>
                             <th>รุ่น</th>
+                            <th>สี</th>
                             <th>ปีที่ผลิต</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-
                     <tbody>
-                        @foreach ($dataAssets as $dataAsset)
-                            <tr>
-                                <td>{{ $dataAsset->Name_Customer }}</td>
-                                <td>{{ $dataAsset->VehicleID }}</td>
-                                <td>
-                                    <a href="{{ route('data_assets.show', $dataAsset->id) }}">View</a>
-                                    <a href="{{ route('data_assets.edit', $dataAsset->id) }}">Edit</a>
-                                    <form action="{{ route('data_assets.destroy', $dataAsset->id) }}" method="POST" style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit">Delete</button>
-                                    </form>
-                                </td>
-                            </tr>
-                        @endforeach
+                        <!-- ข้อมูลจะถูกแทรกที่นี่โดย JavaScript -->
                     </tbody>
+                </table>
 
-                    {{-- <tbody>
-                        <tr>
-                            <td>
-                                <span class="custom-checkbox">
-                                    <input type="checkbox" id="checkbox1" name="options[]" value="1">
-                                    <label for="checkbox1"></label>
-                                </span>
-                            </td>
-                            <td>1</td>
-                            <td>Thomas Hardy</td>
-                            <td>thomashardy@mail.com</td>
-                            <td>Test001</td>
-                            <td>89 Chiaroscuro Rd, Portland, USA</td>
-                            <td>(171) 555-2222</td>
-                            <td>2563</td>
-                            <td style="width: 200px;">
-                                <a href="#showEmployeeModal" class="show" data-toggle="modal">
-                                    <i class="fas fa-eye" data-toggle="tooltip" title="แสดง"></i></a>
-                                <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i
-                                        class="material-icons" data-toggle="tooltip" title="แก้ไข">&#xE254;</i></a>
-                                <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i
-                                        class="material-icons" data-toggle="tooltip" title="ลบ">&#xE872;</i></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="custom-checkbox">
-                                    <input type="checkbox" id="checkbox2" name="options[]" value="1">
-                                    <label for="checkbox2"></label>
-                                </span>
-                            </td>
-                            <td>2</td>
-                            <td>Dominique Perrier</td>
-                            <td>dominiqueperrier@mail.com</td>
-                            <td>Test002</td>
-                            <td>Obere Str. 57, Berlin, Germany</td>
-                            <td>(313) 555-5735</td>
-                            <td>2563</td>
-                            <td style="width: 200px;">
-                                <a href="#showEmployeeModal" class="show" data-toggle="modal">
-                                    <i class="fas fa-eye" data-toggle="tooltip" title="แสดง"></i></a>
-                                <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i
-                                        class="material-icons" data-toggle="tooltip" title="แก้ไข">&#xE254;</i></a>
-                                <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i
-                                        class="material-icons" data-toggle="tooltip" title="ลบ">&#xE872;</i></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="custom-checkbox">
-                                    <input type="checkbox" id="checkbox3" name="options[]" value="1">
-                                    <label for="checkbox3"></label>
-                                </span>
-                            </td>
-                            <td>3</td>
-                            <td>Maria Anders</td>
-                            <td>mariaanders@mail.com</td>
-                            <td>Test003</td>
-                            <td>25, rue Lauriston, Paris, France</td>
-                            <td>(503) 555-9931</td>
-                            <td>2563</td>
-                            <td style="width: 200px;">
-                                <a href="#showEmployeeModal" class="show" data-toggle="modal">
-                                    <i class="fas fa-eye" data-toggle="tooltip" title="แสดง"></i></a>
-                                <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i
-                                        class="material-icons" data-toggle="tooltip" title="แก้ไข">&#xE254;</i></a>
-                                <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i
-                                        class="material-icons" data-toggle="tooltip" title="ลบ">&#xE872;</i></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="custom-checkbox">
-                                    <input type="checkbox" id="checkbox4" name="options[]" value="1">
-                                    <label for="checkbox4"></label>
-                                </span>
-                            </td>
-                            <td>4</td>
-                            <td>Fran Wilson</td>
-                            <td>franwilson@mail.com</td>
-                            <td>Test004</td>
-                            <td>C/ Araquil, 67, Madrid, Spain</td>
-                            <td>(204) 619-5731</td>
-                            <td>2563</td>
-                            <td style="width: 200px;">
-                                <a href="#showEmployeeModal" class="show" data-toggle="modal">
-                                    <i class="fas fa-eye" data-toggle="tooltip" title="แสดง"></i></a>
-                                <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i
-                                        class="material-icons" data-toggle="tooltip" title="แก้ไข">&#xE254;</i></a>
-                                <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i
-                                        class="material-icons" data-toggle="tooltip" title="ลบ">&#xE872;</i></a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <span class="custom-checkbox">
-                                    <input type="checkbox" id="checkbox5" name="options[]" value="1">
-                                    <label for="checkbox5"></label>
-                                </span>
-                            </td>
-                            <td>5</td>
-                            <td>Martin Blank</td>
-                            <td>martinblank@mail.com</td>
-                            <td>Test005</td>
-                            <td>Via Monte Bianco 34, Turin, Italy</td>
-                            <td>(480) 631-2097</td>
-                            <td>2563</td>
-                            <td style="width: 200px;">
-                                <a href="#showEmployeeModal" class="show" data-toggle="modal">
-                                    <i class="fas fa-eye" data-toggle="tooltip" title="แสดง"></i></a>
-                                <a href="#editEmployeeModal" class="edit" data-toggle="modal"><i
-                                        class="material-icons" data-toggle="tooltip" title="แก้ไข">&#xE254;</i></a>
-                                <a href="#deleteEmployeeModal" class="delete" data-toggle="modal"><i
-                                        class="material-icons" data-toggle="tooltip" title="ลบ">&#xE872;</i></a>
-                            </td>
-                        </tr>
-                    </tbody> --}}
                 </table>
                 <div class="clearfix">
                     <div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
@@ -208,218 +158,265 @@
                         <li class="page-item"><a href="#" class="page-link">Next</a></li>
                     </ul>
                 </div>
+
             </div>
         </div>
     </div>
-    <!-- Edit Modal HTML -->
+
+
+
+    <!-- Add Asset Modal -->
     <div id="addEmployeeModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form id="addForm">
                     <div class="modal-header">
                         <h4 class="modal-title">เพิ่มข้อมูลสินทรัพย์</h4>
-                        <button type="button" class="close" data-dismiss="modal"
-                            aria-hidden="true">&times;</button>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label>Name</label>
-                            <input type="text" class="form-control" required>
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (Name Customer) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addNameCustomer">ชื่อ - นามสกุล</label>
+                                <input class="form-control" id="addNameCustomer" type="text" placeholder="กรุณาใส่ ชื่อ - นามสกุล" required>
+                            </div>
+                            <!-- Form Group (Vehicle ID) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addVehicleID">รหัสสินทรัพย์</label>
+                                <input class="form-control" id="addVehicleID" type="text" placeholder="กรุณาใส่รหัสสินทรัพย์" required>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" class="form-control" required>
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (License Plate) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addLicensePlate">หมายเลขทะเบียน</label>
+                                <input class="form-control" id="addLicensePlate" type="text" placeholder="กรุณาใส่หมายเลขทะเบียน" required>
+                            </div>
+                            <!-- Form Group (Make) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addMake">ยี่ห้อ</label>
+                                <input class="form-control" id="addMake" type="text" placeholder="กรุณาใส่ยี่ห้อ" required>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Address</label>
-                            <textarea class="form-control" required></textarea>
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (Model) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addModel">รุ่น</label>
+                                <input class="form-control" id="addModel" type="text" placeholder="กรุณาใส่รุ่น" required>
+                            </div>
+                            <!-- Form Group (Year Of Manufacture) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addYearOfManufacture">ปีที่ผลิต</label>
+                                <input class="form-control" id="addYearOfManufacture" type="number" placeholder="กรุณาใส่ปีที่ผลิต" required>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Phone</label>
-                            <input type="text" class="form-control" required>
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (Color) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addColor">สี</label>
+                                <input class="form-control" id="addColor" type="text" placeholder="กรุณาใส่สี" required>
+                            </div>
+                            <!-- Form Group (VIN) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addVIN">หมายเลข VIN</label>
+                                <input class="form-control" id="addVIN" type="text" placeholder="กรุณาใส่หมายเลข VIN" required>
+                            </div>
+                        </div>
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (Engine Number) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addEngineNumber">หมายเลขเครื่องยนต์</label>
+                                <input class="form-control" id="addEngineNumber" type="text" placeholder="กรุณาใส่หมายเลขเครื่องยนต์" required>
+                            </div>
+                            <!-- Form Group (Vehicle Type) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addVehicleType">ประเภทของรถ</label>
+                                <input class="form-control" id="addVehicleType" type="text" placeholder="กรุณาใส่ประเภทของรถ" required>
+                            </div>
+                        </div>
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (Engine Size) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addEngineSize">ขนาดเครื่องยนต์</label>
+                                <input class="form-control" id="addEngineSize" type="text" placeholder="กรุณาใส่ขนาดเครื่องยนต์" required>
+                            </div>
+                            <!-- Form Group (Seating Capacity) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addSeatingCapacity">ความจุที่นั่ง</label>
+                                <input class="form-control" id="addSeatingCapacity" type="number" placeholder="กรุณาใส่ความจุที่นั่ง" required>
+                            </div>
+                        </div>
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (Insurance Status) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addInsuranceStatus">สถานะการประกันภัย</label>
+                                <input class="form-control" id="addInsuranceStatus" type="text" placeholder="กรุณาใส่สถานะการประกันภัย" required>
+                            </div>
+                            <!-- Form Group (Maintenance History) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addMaintenanceHistory">ประวัติการบำรุงรักษา</label>
+                                <input class="form-control" id="addMaintenanceHistory" type="text" placeholder="กรุณาใส่ประวัติการบำรุงรักษา" required>
+                            </div>
+                        </div>
+                        <div class="row gx-3 mb-3">
+                            <!-- Form Group (Mileage) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addMileage">ระยะทาง</label>
+                                <input class="form-control" id="addMileage" type="number" placeholder="กรุณาใส่ระยะทาง" required>
+                            </div>
+                            <!-- Form Group (Inspection Status) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="addInspectionStatus">สถานะการตรวจสอบ</label>
+                                <input class="form-control" id="addInspectionStatus" type="text" placeholder="กรุณาใส่สถานะการตรวจสอบ" required>
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" class="btn btn-success" value="Add">
+                        <button type="submit" class="btn btn-primary">บันทึก</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">ปิด</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <!-- Edit Modal HTML -->
-    <div id="editEmployeeModal" class="modal fade">
+
+
+    <!-- Edit Asset Modal -->
+    <div id="editCustomerModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form id="editForm">
                     <div class="modal-header">
                         <h4 class="modal-title">แก้ไขข้อมูลสินทรัพย์</h4>
-                        <button type="button" class="close" data-dismiss="modal"
-                            aria-hidden="true">&times;</button>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
                     <div class="modal-body">
-                        {{-- <div class="form-group">
-                            <label>ชื่อ - นามสกุลลูกค้า</label>
-                            <input type="text" class="form-control" required>
-                        </div> --}}
-
+                        <input type="hidden" id="editId" name="id">
                         <div class="row gx-3 mb-3">
-                            <!-- Form Group (first name)-->
+                            <!-- Form Group (Name Customer) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputFirstName">ชื่อ - นามสกุล</label>
-                                <input class="form-control" id="inputFirstName" type="text"
-                                    placeholder="กรุณาใส่ ชื่อ - นามสกุล" value="TEST SYSTEM">
+                                <label class="small mb-1" for="inputNameCustomer">ชื่อ - นามสกุล</label>
+                                <input class="form-control" id="inputNameCustomer" type="text" placeholder="กรุณาใส่ ชื่อ - นามสกุล" required>
                             </div>
-                            <!-- Form Group (last name)-->
+                            <!-- Form Group (Vehicle ID) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputLastName">รหัสสินทรัพย์</label>
-                                <input class="form-control" id="inputLastName" type="text"
-                                    placeholder="กรุณาใส่รหัสสินทรัพย์" value="000-199">
+                                <label class="small mb-1" for="inputVehicleID">รหัสสินทรัพย์</label>
+                                <input class="form-control" id="inputVehicleID" type="text" placeholder="กรุณาใส่รหัสสินทรัพย์" required>
                             </div>
                         </div>
-
                         <div class="row gx-3 mb-3">
-                            <!-- Form Group (first name)-->
+                            <!-- Form Group (License Plate) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputFirstName">หมายเลขทะเบียน</label>
-                                <input class="form-control" id="inputFirstName" type="text"
-                                    placeholder="กรุณาใส่ ชื่อ - นามสกุล" value="TEST SYSTEM">
+                                <label class="small mb-1" for="inputLicensePlate">หมายเลขทะเบียน</label>
+                                <input class="form-control" id="inputLicensePlate" type="text" placeholder="กรุณาใส่หมายเลขทะเบียน" required>
                             </div>
-                            <!-- Form Group (last name)-->
+                            <!-- Form Group (Make) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputLastName">ยี่ห้อ</label>
-                                <input class="form-control" id="inputLastName" type="text"
-                                    placeholder="กรุณาใส่รหัสสินทรัพย์" value="000-199">
+                                <label class="small mb-1" for="inputMake">ยี่ห้อ</label>
+                                <input class="form-control" id="inputMake" type="text" placeholder="กรุณาใส่ยี่ห้อ" required>
                             </div>
                         </div>
-
                         <div class="row gx-3 mb-3">
-                            <!-- Form Group (first name)-->
+                            <!-- Form Group (Model) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputFirstName">รุ่น</label>
-                                <input class="form-control" id="inputFirstName" type="text"
-                                    placeholder="กรุณาใส่ ชื่อ - นามสกุล" value="TEST SYSTEM">
+                                <label class="small mb-1" for="inputModel">รุ่น</label>
+                                <input class="form-control" id="inputModel" type="text" placeholder="กรุณาใส่รุ่น" required>
                             </div>
-                            <!-- Form Group (last name)-->
+                            <!-- Form Group (Year Of Manufacture) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputLastName">ปีที่ผลิต</label>
-                                <input class="form-control" id="inputLastName" type="text"
-                                    placeholder="กรุณาใส่รหัสสินทรัพย์" value="000-199">
+                                <label class="small mb-1" for="inputYearOfManufacture">ปีที่ผลิต</label>
+                                <input class="form-control" id="inputYearOfManufacture" type="number" placeholder="กรุณาใส่ปีที่ผลิต" required>
                             </div>
                         </div>
-
                         <div class="row gx-3 mb-3">
-                            <!-- Form Group (first name)-->
+                            <!-- Form Group (Color) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputFirstName">สี</label>
-                                <input class="form-control" id="inputFirstName" type="text"
-                                    placeholder="กรุณาใส่ ชื่อ - นามสกุล" value="TEST SYSTEM">
+                                <label class="small mb-1" for="inputColor">สี</label>
+                                <input class="form-control" id="inputColor" type="text" placeholder="กรุณาใส่สี">
                             </div>
-                            <!-- Form Group (last name)-->
+                            <!-- Form Group (VIN) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputLastName">หมายเลขตัวถัง</label>
-                                <input class="form-control" id="inputLastName" type="text"
-                                    placeholder="กรุณาใส่รหัสสินทรัพย์" value="000-199">
+                                <label class="small mb-1" for="inputVIN">หมายเลขตัวถัง</label>
+                                <input class="form-control" id="inputVIN" type="text" placeholder="กรุณาใส่หมายเลขตัวถัง">
                             </div>
                         </div>
-
                         <div class="row gx-3 mb-3">
-                            <!-- Form Group (first name)-->
+                            <!-- Form Group (Engine Number) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputFirstName">หมายเลขเครื่องยนต์</label>
-                                <input class="form-control" id="inputFirstName" type="text"
-                                    placeholder="กรุณาใส่ ชื่อ - นามสกุล" value="TEST SYSTEM">
+                                <label class="small mb-1" for="inputEngineNumber">หมายเลขเครื่องยนต์</label>
+                                <input class="form-control" id="inputEngineNumber" type="text" placeholder="กรุณาใส่หมายเลขเครื่องยนต์">
                             </div>
-                            <!-- Form Group (last name)-->
+                            <!-- Form Group (Vehicle Type) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputLastName">ประเภทของรถยนต์</label>
-                                <input class="form-control" id="inputLastName" type="text"
-                                    placeholder="กรุณาใส่รหัสสินทรัพย์" value="000-199">
+                                <label class="small mb-1" for="inputVehicleType">ประเภทของรถ</label>
+                                <input class="form-control" id="inputVehicleType" type="text" placeholder="กรุณาใส่ประเภทของรถ">
                             </div>
                         </div>
-
                         <div class="row gx-3 mb-3">
-                            <!-- Form Group (first name)-->
+                            <!-- Form Group (Engine Size) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputFirstName">ขนาดเครื่องยนต์</label>
-                                <input class="form-control" id="inputFirstName" type="text"
-                                    placeholder="กรุณาใส่ ชื่อ - นามสกุล" value="TEST SYSTEM">
+                                <label class="small mb-1" for="inputEngineSize">ขนาดเครื่องยนต์</label>
+                                <input class="form-control" id="inputEngineSize" type="text" placeholder="กรุณาใส่ขนาดเครื่องยนต์">
                             </div>
-                            <!-- Form Group (last name)-->
+                            <!-- Form Group (Seating Capacity) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputLastName">จำนวนที่นั่ง</label>
-                                <input class="form-control" id="inputLastName" type="text"
-                                    placeholder="กรุณาใส่รหัสสินทรัพย์" value="000-199">
+                                <label class="small mb-1" for="inputSeatingCapacity">ความจุที่นั่ง</label>
+                                <input class="form-control" id="inputSeatingCapacity" type="number" placeholder="กรุณาใส่ความจุที่นั่ง">
                             </div>
                         </div>
-
                         <div class="row gx-3 mb-3">
-                            <!-- Form Group (first name)-->
+                            <!-- Form Group (Insurance Status) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputFirstName">สถานะการประกัน</label>
-                                <input class="form-control" id="inputFirstName" type="text"
-                                    placeholder="กรุณาใส่ ชื่อ - นามสกุล" value="TEST SYSTEM">
+                                <label class="small mb-1" for="inputInsuranceStatus">สถานะประกันภัย</label>
+                                <input class="form-control" id="inputInsuranceStatus" type="text" placeholder="กรุณาใส่สถานะประกันภัย">
                             </div>
-                            <!-- Form Group (last name)-->
+                            <!-- Form Group (Maintenance History) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputLastName">ประวัติการซ่อมบำรุง</label>
-                                <input class="form-control" id="inputLastName" type="text"
-                                    placeholder="กรุณาใส่รหัสสินทรัพย์" value="000-199">
+                                <label class="small mb-1" for="inputMaintenanceHistory">ประวัติการซ่อมบำรุง</label>
+                                <input class="form-control" id="inputMaintenanceHistory" type="text" placeholder="กรุณาใส่ประวัติการซ่อมบำรุง">
                             </div>
                         </div>
-
                         <div class="row gx-3 mb-3">
-                            <!-- Form Group (first name)-->
-                            {{-- <div class="col-md-6">
-                                <label class="small mb-1" for="inputFirstName">สถานะการประกัน</label>
-                                <input class="form-control" id="inputFirstName" type="text"
-                                    placeholder="กรุณาใส่ ชื่อ - นามสกุล" value="TEST SYSTEM">
-                            </div> --}}
-                            <!-- Form Group (last name)-->
+                            <!-- Form Group (Mileage) -->
                             <div class="col-md-6">
-                                <label class="small mb-1" for="inputLastName">สถานะการตรวจสอบสภาพรถ</label>
-                                <input class="form-control" id="inputLastName" type="text"
-                                    placeholder="กรุณาใส่รหัสสินทรัพย์" value="000-199">
+                                <label class="small mb-1" for="inputMileage">ไมล์สะสม</label>
+                                <input class="form-control" id="inputMileage" type="number" placeholder="กรุณาใส่ไมล์สะสม">
+                            </div>
+                            <!-- Form Group (Inspection Status) -->
+                            <div class="col-md-6">
+                                <label class="small mb-1" for="inputInspectionStatus">สถานะการตรวจสอบ</label>
+                                <input class="form-control" id="inputInspectionStatus" type="text" placeholder="กรุณาใส่สถานะการตรวจสอบ">
                             </div>
                         </div>
-
-
-
-
-                        {{-- <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Address</label>
-                            <textarea class="form-control" required></textarea>
-                        </div>
-                        <div class="form-group">
-                            <label>Phone</label>
-                            <input type="text" class="form-control" required>
-                        </div> --}}
                     </div>
                     <div class="modal-footer">
-                        <input type="button" class="btn btn-default" data-dismiss="modal" value="Cancel">
-                        <input type="submit" class="btn btn-info" value="Save">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">ปิด</button>
+                        <button class="btn btn-primary" type="submit">บันทึก</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-    <!-- Delete Modal HTML -->
+
+
+    <!-- Modal for delete confirmation -->
     <div id="deleteEmployeeModal" class="modal fade">
         <div class="modal-dialog">
             <div class="modal-content">
-                <form>
+                <form id="deleteForm">
                     <div class="modal-header">
                         <h4 class="modal-title">ลบข้อมูลสินทรัพย์</h4>
-                        <button type="button" class="close" data-dismiss="modal"
-                            aria-hidden="true">&times;</button>
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
                     <div class="modal-body">
                         <p>คุณแน่ใจหรือไม่ว่าต้องการลบบันทึกเหล่านี้?</p>
                         <p class="text-warning"><small>การดำเนินการนี้จะไม่สามารถยกเลิกได้</small></p>
+                        <!-- Hidden input to store the id of the asset to be deleted -->
+                        {{-- <input type="hidden" id="deleteId" name="id" value=""> --}}
+                        <!-- Ensure you have a hidden input field for id -->
+                        <input type="hidden" id="deleteId" name="deleteId" value="">
+
                     </div>
                     <div class="modal-footer">
                         <input type="button" class="btn btn-default" data-dismiss="modal" value="ยกเลิก">
@@ -429,12 +426,11 @@
             </div>
         </div>
     </div>
+
+
 </body>
 
 </html>
-
-
-
 
 
 
@@ -747,3 +743,377 @@
         });
     });
 </script>
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        fetch('/fetch-data-assets')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.querySelector('#data-asset-table tbody');
+                tableBody.innerHTML = ''; // ล้างข้อมูลที่มีอยู่
+
+                data.forEach(asset => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <span class="custom-checkbox">
+                                <input type="checkbox" class="select-item" value="${asset.id}">
+                                <label></label>
+                            </span>
+                        </td>
+                        <td>${asset.id}</td>
+                        <td>${asset.Name_Customer}</td>
+                        <td>${asset.VehicleID}</td>
+                        <td>${asset.Make}</td>
+                        <td>${asset.LicensePlate}</td>
+                        <td>${asset.Model}</td>
+                        <td>${asset.Color}</td>
+                        <td>${asset.YearOfManufacture}</td>
+
+                        <td style="width: 200px;">
+
+                            <a href="#editCustomerModal" class="edit" data-toggle="modal" id="show-data" style="color: #91a7ff;"
+                                data-id="${asset.id}"
+                                data-name-customer="${asset.Name_Customer}"
+                                data-vehicle-id="${asset.VehicleID}"
+                                data-license-plate="${asset.LicensePlate}"
+                                data-make="${asset.Make}"
+                                data-model="${asset.Model}"
+                                data-year-of-manufacture="${asset.YearOfManufacture}"
+                                data-color="${asset.Color}"
+                                data-vin="${asset.VIN}"
+                                data-engine-number="${asset.EngineNumber}"
+                                data-vehicle-type="${asset.VehicleType}"
+                                data-engine-size="${asset.EngineSize}"
+                                data-seating-capacity="${asset.SeatingCapacity}"
+                                data-insurance-status="${asset.InsuranceStatus}"
+                                data-maintenance-history="${asset.MaintenanceHistory}"
+                                data-mileage="${asset.Mileage}"
+                                data-inspection-status="${asset.InspectionStatus}">
+                                <i class="fas fa-eye" data-toggle="tooltip" title="แสดง">&#xE254;</i></a>
+
+                            <a href="#editCustomerModal" class="edit" data-toggle="modal"
+                                data-id="${asset.id}"
+                                data-name-customer="${asset.Name_Customer}"
+                                data-vehicle-id="${asset.VehicleID}"
+                                data-license-plate="${asset.LicensePlate}"
+                                data-make="${asset.Make}"
+                                data-model="${asset.Model}"
+                                data-year-of-manufacture="${asset.YearOfManufacture}"
+                                data-color="${asset.Color}"
+                                data-vin="${asset.VIN}"
+                                data-engine-number="${asset.EngineNumber}"
+                                data-vehicle-type="${asset.VehicleType}"
+                                data-engine-size="${asset.EngineSize}"
+                                data-seating-capacity="${asset.SeatingCapacity}"
+                                data-insurance-status="${asset.InsuranceStatus}"
+                                data-maintenance-history="${asset.MaintenanceHistory}"
+                                data-mileage="${asset.Mileage}"
+                                data-inspection-status="${asset.InspectionStatus}">
+                                <i class="material-icons" data-toggle="tooltip" title="แก้ไข">&#xE254;</i></a>
+
+                            <a href="#deleteEmployeeModal" class="delete" data-toggle="modal" data-id="${asset.id}">
+                                <i class="material-icons" data-toggle="tooltip" title="ลบ">&#xE872;</i>
+                            </a>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+
+
+                // จัดการคลิกปุ่มแก้ไข
+                document.querySelectorAll('.edit').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id');
+                        document.getElementById('editId').value = id;
+                        document.getElementById('inputNameCustomer').value = this.getAttribute('data-name-customer');
+                        document.getElementById('inputVehicleID').value = this.getAttribute('data-vehicle-id');
+                        document.getElementById('inputLicensePlate').value = this.getAttribute('data-license-plate');
+                        document.getElementById('inputMake').value = this.getAttribute('data-make');
+                        document.getElementById('inputModel').value = this.getAttribute('data-model');
+                        document.getElementById('inputYearOfManufacture').value = this.getAttribute('data-year-of-manufacture');
+                        document.getElementById('inputColor').value = this.getAttribute('data-color');
+                        document.getElementById('inputVIN').value = this.getAttribute('data-vin');
+                        document.getElementById('inputEngineNumber').value = this.getAttribute('data-engine-number');
+                        document.getElementById('inputVehicleType').value = this.getAttribute('data-vehicle-type');
+                        document.getElementById('inputEngineSize').value = this.getAttribute('data-engine-size');
+                        document.getElementById('inputSeatingCapacity').value = this.getAttribute('data-seating-capacity');
+                        document.getElementById('inputInsuranceStatus').value = this.getAttribute('data-insurance-status');
+                        document.getElementById('inputMaintenanceHistory').value = this.getAttribute('data-maintenance-history');
+                        document.getElementById('inputMileage').value = this.getAttribute('data-mileage');
+                        document.getElementById('inputInspectionStatus').value = this.getAttribute('data-inspection-status');
+                    });
+                });
+
+                // Handle form submission
+                document.getElementById('editForm').addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const id = document.getElementById('editId').value;
+                    const data = {
+                        Name_Customer: document.getElementById('inputNameCustomer').value,
+                        VehicleID: document.getElementById('inputVehicleID').value,
+                        LicensePlate: document.getElementById('inputLicensePlate').value,
+                        Make: document.getElementById('inputMake').value,
+                        Model: document.getElementById('inputModel').value,
+                        YearOfManufacture: document.getElementById('inputYearOfManufacture').value,
+                        Color: document.getElementById('inputColor').value,
+                        VIN: document.getElementById('inputVIN').value,
+                        EngineNumber: document.getElementById('inputEngineNumber').value,
+                        VehicleType: document.getElementById('inputVehicleType').value,
+                        EngineSize: document.getElementById('inputEngineSize').value,
+                        SeatingCapacity: document.getElementById('inputSeatingCapacity').value,
+                        InsuranceStatus: document.getElementById('inputInsuranceStatus').value,
+                        MaintenanceHistory: document.getElementById('inputMaintenanceHistory').value,
+                        Mileage: document.getElementById('inputMileage').value,
+                        InspectionStatus: document.getElementById('inputInspectionStatus').value,
+                    };
+
+
+                    fetch(`/data-assets/update/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                        },
+                        body: JSON.stringify(data),
+                    })
+                    .then(response => response.json())
+                    .then(result => {
+                        if (result.success) {
+                            alert(result.message);
+                            $('#editCustomerModal').modal('hide');
+                            location.reload(); // โหลดหน้านี้ซ้ำเพื่อดูข้อมูลที่อัปเดต
+                        } else {
+                            alert(result.message);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            })
+            .catch(error => console.error('Error:', error));
+    });
+</script>
+
+<script>
+   document.addEventListener('DOMContentLoaded', () => {
+        // Handle form submission
+        document.getElementById('addForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const data = {
+                Name_Customer: document.getElementById('addNameCustomer').value,
+                VehicleID: document.getElementById('addVehicleID').value,
+                LicensePlate: document.getElementById('addLicensePlate').value,
+                Make: document.getElementById('addMake').value,
+                Model: document.getElementById('addModel').value,
+                YearOfManufacture: document.getElementById('addYearOfManufacture').value,
+                Color: document.getElementById('addColor').value,
+                VIN: document.getElementById('addVIN').value,
+                EngineNumber: document.getElementById('addEngineNumber').value,
+                VehicleType: document.getElementById('addVehicleType').value,
+                EngineSize: document.getElementById('addEngineSize').value,
+                SeatingCapacity: document.getElementById('addSeatingCapacity').value,
+                InsuranceStatus: document.getElementById('addInsuranceStatus').value,
+                MaintenanceHistory: document.getElementById('addMaintenanceHistory').value,
+                Mileage: document.getElementById('addMileage').value,
+                InspectionStatus: document.getElementById('addInspectionStatus').value
+            };
+
+            fetch('/data-assets/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert(result.message);
+                    $('#addEmployeeModal').modal('hide');
+                    location.reload(); // Reload the page to see updated data
+                } else {
+                    alert(result.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+
+</script>
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+        $('#deleteEmployeeModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var id = button.data('id'); // Extract info from data-* attributes
+            var modal = $(this);
+            modal.find('#deleteId').val(id); // Set the value of the hidden input
+        });
+
+        document.getElementById('deleteForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const id = document.getElementById('deleteId').value;
+
+            // ตรวจสอบว่า ID เป็นตัวเลข
+            if (isNaN(id) || id.trim() === '') {
+                alert('Invalid ID');
+                return;
+            }
+
+            fetch(`/data-assets/delete/${id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert(result.message);
+                    $('#deleteEmployeeModal').modal('hide');
+                    location.reload(); // Reload the page to reflect the changes
+                } else {
+                    alert(result.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    });
+
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- jQuery -->
+{{-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> --}}
+
+
+
+{{-- แสดงข้อมูลใน Modal --}}
+{{-- <script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.show').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.getAttribute('data-id-show');
+
+            fetch(`/data-assets/show/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('showNameCustomer').innerText = data.asset.Name_Customer;
+                        document.getElementById('showVehicleID').innerText = data.asset.VehicleID;
+                        document.getElementById('showLicensePlate').innerText = data.asset.LicensePlate;
+                        document.getElementById('showMake').innerText = data.asset.Make;
+                        document.getElementById('showModel').innerText = data.asset.Model;
+                        document.getElementById('showYearOfManufacture').innerText = data.asset.YearOfManufacture;
+                        document.getElementById('showColor').innerText = data.asset.Color;
+                        document.getElementById('showVIN').innerText = data.asset.VIN;
+                        document.getElementById('showEngineNumber').innerText = data.asset.EngineNumber;
+                        document.getElementById('showVehicleType').innerText = data.asset.VehicleType;
+                        document.getElementById('showEngineSize').innerText = data.asset.EngineSize;
+                        document.getElementById('showSeatingCapacity').innerText = data.asset.SeatingCapacity;
+                        document.getElementById('showInsuranceStatus').innerText = data.asset.InsuranceStatus;
+                        document.getElementById('showMaintenanceHistory').innerText = data.asset.MaintenanceHistory;
+                        document.getElementById('showMileage').innerText = data.asset.Mileage;
+                        document.getElementById('showInspectionStatus').innerText = data.asset.InspectionStatus;
+
+                        $('#showEmployeeModal').modal('show');
+                    } else {
+                        alert(data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
+});
+
+</script>
+
+
+
+<!-- Show Asset Modal -->
+<div id="showEmployeeModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="showEmployeeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="showEmployeeModalLabel">Asset Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Name:</strong> <span id="showNameCustomer"></span></p>
+                <p><strong>Vehicle ID:</strong> <span id="showVehicleID"></span></p>
+                <p><strong>License Plate:</strong> <span id="showLicensePlate"></span></p>
+                <p><strong>Make:</strong> <span id="showMake"></span></p>
+                <p><strong>Model:</strong> <span id="showModel"></span></p>
+                <p><strong>Year of Manufacture:</strong> <span id="showYearOfManufacture"></span></p>
+                <p><strong>Color:</strong> <span id="showColor"></span></p>
+                <p><strong>VIN:</strong> <span id="showVIN"></span></p>
+                <p><strong>Engine Number:</strong> <span id="showEngineNumber"></span></p>
+                <p><strong>Vehicle Type:</strong> <span id="showVehicleType"></span></p>
+                <p><strong>Engine Size:</strong> <span id="showEngineSize"></span></p>
+                <p><strong>Seating Capacity:</strong> <span id="showSeatingCapacity"></span></p>
+                <p><strong>Insurance Status:</strong> <span id="showInsuranceStatus"></span></p>
+                <p><strong>Maintenance History:</strong> <span id="showMaintenanceHistory"></span></p>
+                <p><strong>Mileage:</strong> <span id="showMileage"></span></p>
+                <p><strong>Inspection Status:</strong> <span id="showInspectionStatus"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div> --}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
